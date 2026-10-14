@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>genphish-guard console</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f14'/%3E%3Cpath d='M16 5l9 3.6v7.2c0 5.4-3.8 9.9-9 11.2-5.2-1.3-9-5.8-9-11.2V8.6L16 5z' fill='none' stroke='%2338bdf8' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M11.5 16.2l3 3 6-6.4' fill='none' stroke='%2338bdf8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark">genphish-guard</span>
+    <span class="sub">v2.0 · console</span>
+  </div>
+  <span class="statuspill" id="pill-health"><span class="dot" id="dot"></span><span id="pill-text">connecting…</span></span>
+  <span class="statuspill" id="pill-mode">data: <span id="mode">—</span></span>
+  <nav class="tabs" id="tabs">
+    <button data-v="detect" class="on">Detect</button>
+    <button data-v="transfer">Transfer</button>
+    <button data-v="calib">Calibration</button>
+    <button data-v="drift">Drift Monitor</button>
+    <button data-v="soar">SOAR</button>
+    <button data-v="api">API</button>
+  </nav>
+</header>
+
+<main><div class="page">
+
+<!-- ══════════════════════════ DETECT ══════════════════════════ -->
+<section class="view on" id="v-detect">
+  <div class="grid g-detect">
+
+    <div class="card">
+      <div class="card-h">
+        <span class="card-t">Email under inspection</span>
+        <span class="card-note">17 stylometric features extracted on submit</span>
+      </div>
+
+      <div style="margin-bottom:11px">
+        <label class="fl">Load a sample</label>
+        <div class="chips" id="chips"></div>
+        <div class="banner small" id="sample-note" hidden style="margin:11px 0 0"></div>
+      </div>
+
+      <textarea id="email" placeholder="Paste a raw email body here, or pick a sample above…"></textarea>
+
+      <div class="grid g-3" style="margin-top:12px">
+        <div>
+          <label class="fl">Detector family</label>
+          <select id="sel-kind">
+            <option value="xgboost">XGBoost (primary)</option>
+            <option value="logreg">Logistic Regression</option>
+            <option value="rf">Random Forest</option>
+            <option value="mlp">MLP</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl">Trained on</label>
+          <select id="sel-src"></select>
+        </div>
+        <div>
+          <label class="fl">Threshold calibration</label>
+          <select id="sel-cal">
+            <option value="stale">stale (source threshold)</option>
+            <option value="dm">distribution matching</option>
+            <option value="em">prior-shift EM</option>
+            <option value="selftrain">self-training</option>
+            <option value="oracle">labelled oracle</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="btn-detect">Analyse email</button>
+        <button class="btn ghost sm" id="btn-clear">Clear</button>
+        <span class="spacer"></span>
+        <label class="small dim" style="display:flex;gap:6px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="chk-soar" checked style="width:auto;accent-color:var(--accent)">
+          raise SOAR incident
+        </label>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="verdict">
+        <div class="verdict-top" id="vtop">
+          <span class="tier-badge idle" id="tier">AWAITING INPUT</span>
+          <div class="verdict-sub" id="vsub">Submit an email to get a zero-trust decision.</div>
+        </div>
+
+        <div class="meter-wrap">
+          <div class="meter-head">
+            <span>phishing confidence</span>
+            <span class="meter-score" id="score">—</span>
+          </div>
+          <div class="meter" id="meter">
+            <div class="zone deliver" id="z-del"></div>
+            <div class="zone defuse"  id="z-def"></div>
+            <div class="zone block"   id="z-blk"></div>
+            <div class="fill"   id="fill"></div>
+            <div class="thr"    id="thrmark"></div>
+            <div class="needle" id="needle" style="left:0"></div>
+          </div>
+          <div class="meter-legend">
+            <span>0.00 · DELIVER</span><span>DEFUSE</span><span>BLOCK · 1.00</span>
+          </div>
+          <div class="small faint mono" style="margin-top:7px" id="thrline">
+            operating threshold —
+          </div>
+        </div>
+
+        <div class="gpills" id="gpills"></div>
+
+        <div class="contrib">
+          <div class="card-t" style="margin-bottom:9px">Top feature contributions</div>
+          <div id="contrib"><div class="empty">No analysis yet.</div></div>
+        </div>
+      </div>
+
+      <div class="card" id="inc-card" hidden>
+        <div class="card-h">
+          <span class="card-t">SOAR incident raised</span>
+          <button class="btn ghost sm" id="btn-goto-soar">Open SOAR log</button>
+        </div>
+        <div id="inc-preview"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════ TRANSFER ══════════════════════════ -->
+<section class="view" id="v-transfer">
+  <div class="banner">
+    <span>▲</span>
+    <div><b>The one claim.</b> Read the two matrices together. AUC stays high off the diagonal — the detector still <i>ranks</i> phishing above legitimate mail under a new generator. F1 at the stale threshold collapses. The signal survives; the threshold dies. That gap is what label-free calibration recovers.</div>
+  </div>
+
+  <div class="grid g-2">
+    <div class="card">
+      <div class="card-h"><span class="card-t">Off-diagonal AUC — ranking</span><span class="card-note">rows = trained on · cols = tested on</span></div>
+      <div class="tbl-scroll"><table class="heat" id="heat-auc"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="card-t">F1 at the stale threshold</span><span class="card-note">same detectors, same data</span></div>
+      <div class="tbl-scroll"><table class="heat" id="heat-f1"></table></div>
+    </div>
+  </div>
+
+  <div class="tiles" style="margin-top:16px" id="transfer-tiles"></div>
+</section>
+
+<!-- ══════════════════════════ CALIBRATION ══════════════════════════ -->
+<section class="view" id="v-calib">
+  <div class="tiles" id="calib-tiles"></div>
+
+  <div class="grid g-2">
+    <div class="card">
+      <div class="card-h"><span class="card-t">F1 by calibration method</span><span class="card-note">mean over cross-generator pairs</span></div>
+      <div id="calib-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="card-t">Why EM fails</span></div>
+      <p class="small dim" style="line-height:1.7">
+        Prior-shift EM (Saerens–Latinne–Decaestecker) assumes the source classifier is
+        well calibrated on the target. Generator shift breaks exactly that assumption.
+        EM converges — confidently — to the wrong phishing prior, and the estimate does
+        not move whether you give it 5 iterations or 200.
+      </p>
+      <div class="tiles" style="grid-template-columns:1fr 1fr;margin:13px 0 0">
+        <div class="tile"><div class="k">EM estimated prior</div><div class="v bad" id="pi-hat">—</div><div class="n">π̂ on unlabelled target</div></div>
+        <div class="tile"><div class="k">True prior</div><div class="v ok" id="pi-true">—</div><div class="n">held-out ground truth</div></div>
+      </div>
+      <p class="small faint" style="margin-top:11px">
+        Distribution matching sidesteps this by transporting the threshold's
+        <i>quantile</i> rather than trusting the posterior.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><span class="card-t">Per-pair threshold and F1</span><span class="card-note">zero target labels used by stale / dm / em / selftrain</span></div>
+    <div class="tbl-scroll"><table class="t" id="calib-table"></table></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ DRIFT ══════════════════════════ -->
+<section class="view" id="v-drift">
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h">
+      <span class="card-t">Conformal-martingale drift simulation</span>
+      <span class="card-note">Ville's inequality · P(false alarm) ≤ δ = 0.01</span>
+    </div>
+    <div class="grid g-4">
+      <div><label class="fl">Source generator</label><select id="d-src"></select></div>
+      <div><label class="fl">Shifts to</label><select id="d-tgt"></select></div>
+      <div><label class="fl">Stream length</label><input type="number" id="d-n" value="1200" min="50" max="3000" step="50"></div>
+      <div><label class="fl">Shift at email #</label><input type="number" id="d-at" value="300" min="10" step="10"></div>
+    </div>
+    <div class="row" style="margin-top:13px">
+      <button class="btn" id="btn-drift">Run stream</button>
+      <span class="small faint" id="drift-status"></span>
+    </div>
+  </div>
+
+  <div class="tiles" id="drift-tiles"></div>
+
+  <div class="card">
+    <div class="card-h"><span class="card-t">Martingale wealth (log scale)</span><span class="card-note">alarm when wealth crosses 1/δ = 100</span></div>
+    <div id="drift-chart"><div class="empty">Run a stream to see the monitor fire.</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><span class="card-t">Score stream</span><span class="card-note">each dot is one delivered email</span></div>
+    <div id="score-chart"><div class="empty">—</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SOAR ══════════════════════════ -->
+<section class="view" id="v-soar">
+  <div class="tiles" id="soar-tiles"></div>
+
+  <div class="grid g-2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-h"><span class="card-t">Connector</span></div>
+      <label class="fl">Webhook endpoint (optional)</label>
+      <input type="url" id="soar-endpoint" placeholder="https://soar.example.com/rest/container — leave blank for simulation mode">
+      <p class="small faint" style="margin-top:9px">
+        Blank uses the in-memory simulation connector. A URL posts the incident JSON
+        to any SOAR platform that accepts a webhook — Splunk SOAR, XSOAR, Sentinel.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="card-t">Playbook reference</span></div>
+      <div class="row">
+        <button class="btn ghost sm" data-pb="BLOCK">BLOCK</button>
+        <button class="btn ghost sm" data-pb="DEFUSE">DEFUSE</button>
+        <button class="btn ghost sm" data-pb="DELIVER">DELIVER</button>
+      </div>
+      <div id="pb-view" style="margin-top:11px"><p class="small faint">Pick a tier to see the mapped response steps.</p></div>
+    </div>
+  </div>
+
+  <div class="card pad0">
+    <div class="card-h" style="padding:16px 18px 0;margin-bottom:11px">
+      <span class="card-t">Incident log</span>
+      <div class="row">
+        <button class="btn ghost sm" id="btn-refresh-soar">Refresh</button>
+        <button class="btn danger sm" id="btn-clear-soar">Clear log</button>
+      </div>
+    </div>
+    <div style="padding:0 18px 18px" id="soar-list"><div class="empty">No incidents yet. Analyse an email on the Detect tab.</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ API ══════════════════════════ -->
+<section class="view" id="v-api">
+  <div class="banner" style="background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.3);color:var(--accent)">
+    <span>▸</span>
+    <div><b>Every panel in this console is a thin client over these endpoints.</b> Interactive OpenAPI docs are at <span class="mono">/docs</span>; the raw schema is at <span class="mono">/openapi.json</span>.</div>
+  </div>
+
+  <div class="grid g-2">
+    <div class="card">
+      <div class="card-h"><span class="card-t">Endpoints</span></div>
+      <div id="eplist"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><span class="card-t">Try it — POST /api/detect</span></div>
+      <label class="fl">Request body</label>
+      <textarea id="api-body" style="min-height:170px">{
+  "text": "URGENT: your account will be suspended. Verify now at https://secure-verify.com",
+  "detector": "xgboost",
+  "trained_on": "pooled",
+  "calibration": "stale"
+}</textarea>
+      <div class="row" style="margin-top:11px">
+        <button class="btn" id="btn-api-send">Send request</button>
+        <span class="small faint" id="api-status"></span>
+      </div>
+      <pre class="json" id="api-out">Response will appear here.</pre>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><span class="card-t">curl</span></div>
+    <pre class="json" id="curl-block"></pre>
+  </div>
+</section>
+
+</div></main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

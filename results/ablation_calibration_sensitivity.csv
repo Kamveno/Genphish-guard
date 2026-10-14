@@ -1,0 +1,14 @@
+knob,value,method,mean_recovery,mean_f1_stale,guard_triggers,mean_pi_hat
+source operating recall,0.8,dm,0.8634157564235664,0.5143784201775329,,
+source operating recall,0.85,dm,0.872510172281087,0.5809785916287237,,
+source operating recall,0.9,dm,0.8869139337090209,0.6294869272203659,,
+source operating recall,0.95,dm,0.8950183726184179,0.6855249149224276,,
+source operating recall,0.99,dm,0.15822141833076478,0.753218359622934,,
+self-training band (hi/lo),0.95/0.05,self,0.2175756138877204,,0.0,
+self-training band (hi/lo),0.9/0.1,self,0.22312338596148762,,0.0,
+self-training band (hi/lo),0.85/0.15,self,0.2403524785042289,,0.0,
+self-training band (hi/lo),0.75/0.25,self,0.3506493173593192,,0.0,
+EM iterations,5,em,0.12591388692618205,,,0.13540387401978174
+EM iterations,20,em,0.12591388692618205,,,0.13539324700832367
+EM iterations,50,em,0.12591388692618205,,,0.13539324700832367
+EM iterations,200,em,0.12591388692618205,,,0.13539324700832367

@@ -1,0 +1,9 @@
+# Hugging Face Spaces config. Rename to README.md front-matter when deploying,
+# or create the Space with SDK=docker and this repo as the source.
+title: genphish-guard
+emoji: "\U0001F6E1"
+colorFrom: blue
+colorTo: gray
+sdk: docker
+app_port: 8000
+pinned: false

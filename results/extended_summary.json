@@ -1,0 +1,273 @@
+{
+  "data_mode": "SYNTHETIC",
+  "model": "xgboost",
+  "seed": 20261011,
+  "studies": [
+    "ablations",
+    "neural",
+    "robustness",
+    "stability"
+  ],
+  "ablation": {
+    "feature_groups": {
+      "all 17 features": {
+        "transfer_gap_pp": 28.81,
+        "offdiag_auc": 0.9767,
+        "rec_dm": 0.8869139337090209
+      },
+      "\u2212 length": {
+        "transfer_gap_pp": 28.16,
+        "offdiag_auc": 0.9778,
+        "rec_dm": 0.8857498520779302
+      },
+      "\u2212 lexical": {
+        "transfer_gap_pp": 28.17,
+        "offdiag_auc": 0.9795,
+        "rec_dm": 0.8779995132866761
+      },
+      "\u2212 persuasion": {
+        "transfer_gap_pp": 18.47,
+        "offdiag_auc": 0.6002,
+        "rec_dm": 0.18803905379286676
+      },
+      "\u2212 orthographic": {
+        "transfer_gap_pp": 28.84,
+        "offdiag_auc": 0.9778,
+        "rec_dm": 0.8556888751453636
+      },
+      "only persuasion": {
+        "transfer_gap_pp": 28.01,
+        "offdiag_auc": 0.9919,
+        "rec_dm": 0.9259495895142925
+      },
+      "only lexical": {
+        "transfer_gap_pp": 9.01,
+        "offdiag_auc": 0.5132,
+        "rec_dm": 0.2564184363960457
+      }
+    },
+    "shuffled_control_null_auc": 0.4926875,
+    "shuffled_control_null_range": [
+      0.4412,
+      0.5267
+    ],
+    "shuffled_control_permutation_p": 0.1111111111111111,
+    "shuffled_control_passes": true,
+    "detector_family": {
+      "xgboost": {
+        "transfer_gap_pp": 28.81,
+        "offdiag_auc": 0.9767,
+        "f1_stale": 0.6294869272203659,
+        "f1_dm": 0.8494915936776403,
+        "rec_dm": 0.8869139337090209
+      },
+      "logreg": {
+        "transfer_gap_pp": 7.54,
+        "offdiag_auc": 0.9921,
+        "f1_stale": 0.7837837491888724,
+        "f1_dm": 0.9304444160005648,
+        "rec_dm": 0.6869727956918551
+      },
+      "rf": {
+        "transfer_gap_pp": 29.69,
+        "offdiag_auc": 0.9891,
+        "f1_stale": 0.6468938282887483,
+        "f1_dm": 0.9157916434270194,
+        "rec_dm": 0.8818566575238654
+      },
+      "mlp": {
+        "transfer_gap_pp": 7.8,
+        "offdiag_auc": 0.9892,
+        "f1_stale": 0.8034505547768648,
+        "f1_dm": 0.9150906511390025,
+        "rec_dm": 0.9141759058975584
+      }
+    },
+    "pooled_upper_bound_f1": 0.9551203087873724,
+    "dm_share_of_pooled_gap": 0.6690697633219439,
+    "dm_recovery_range_over_operating_recall": [
+      0.15822141833076478,
+      0.8950183726184179
+    ]
+  },
+  "robustness": {
+    "scenarios": {
+      "clean (no transform)": {
+        "offdiag_auc": 0.9767,
+        "f1_stale": 0.6294869272203659,
+        "f1_dm": 0.8494915936776403,
+        "rec_dm": 0.8869139337090209,
+        "verdict": "no material effect"
+      },
+      "de-quantization probe (1e-6)": {
+        "offdiag_auc": 0.884,
+        "f1_stale": 0.6062929746905018,
+        "f1_dm": 0.6683378956062125,
+        "rec_dm": 0.5406916933673983,
+        "verdict": "ranking degraded; F1 flat only because the stale threshold was already misplaced"
+      },
+      "undirected noise 0.05\u03c3": {
+        "offdiag_auc": 0.9765,
+        "f1_stale": 0.6245812825462277,
+        "f1_dm": 0.8490356653949277,
+        "rec_dm": 0.8917671860775839,
+        "verdict": "no material effect"
+      },
+      "undirected noise 0.25\u03c3": {
+        "offdiag_auc": 0.9765,
+        "f1_stale": 0.6295221693007932,
+        "f1_dm": 0.8477345661185417,
+        "rec_dm": 0.8762171728871316,
+        "verdict": "no material effect"
+      },
+      "paraphrase": {
+        "offdiag_auc": 0.9044,
+        "f1_stale": 0.6699087148106636,
+        "f1_dm": 0.7047694862849379,
+        "rec_dm": 0.13498101812909954,
+        "verdict": "ranking degraded; F1 flat only because the stale threshold was already misplaced"
+      },
+      "register shift": {
+        "offdiag_auc": 0.8749,
+        "f1_stale": 0.6041504458013842,
+        "f1_dm": 0.6554517659381501,
+        "rec_dm": 0.2803742173036577,
+        "verdict": "ranking degraded; F1 flat only because the stale threshold was already misplaced"
+      },
+      "length inflation": {
+        "offdiag_auc": 0.9752,
+        "f1_stale": 0.6424531821725151,
+        "f1_dm": 0.8460980058114703,
+        "rec_dm": 0.8671862832040099,
+        "verdict": "no material effect"
+      },
+      "targeted evasion \u03b5=0.25": {
+        "offdiag_auc": 0.9772,
+        "f1_stale": 0.6264508553226067,
+        "f1_dm": 0.8481878903116287,
+        "rec_dm": 0.8817463473783852,
+        "verdict": "no material effect"
+      },
+      "targeted evasion \u03b5=0.50": {
+        "offdiag_auc": 0.9657,
+        "f1_stale": 0.7404874624837091,
+        "f1_dm": 0.8291677795856081,
+        "rec_dm": 0.9074571652597045,
+        "verdict": "no material effect"
+      },
+      "targeted evasion \u03b5=0.75": {
+        "offdiag_auc": 0.8918,
+        "f1_stale": 0.6221437707279368,
+        "f1_dm": 0.6425651289424865,
+        "rec_dm": 0.2161533702560766,
+        "verdict": "ranking degraded; F1 flat only because the stale threshold was already misplaced"
+      },
+      "targeted evasion \u03b5=1.00": {
+        "offdiag_auc": 0.3895,
+        "f1_stale": 0.3575575811699343,
+        "f1_dm": 0.3720765004510074,
+        "rec_dm": 0.26421487040538955,
+        "verdict": "signal degraded \u2014 recalibration cannot fix this"
+      }
+    },
+    "worst_scenario": "targeted evasion \u03b5=1.00",
+    "worst_f1_stale": 0.3575575811699343,
+    "worst_f1_after_recalibration": 0.3720765004510074,
+    "recalibration_helps_in_all_scenarios": true,
+    "dequantization_auc_cost_pp": 9.27,
+    "evasion_failure_shape": {
+      "xgboost": {
+        "auc_at_eps_0": 0.9767,
+        "auc_at_eps_1": 0.3895,
+        "largest_single_step_auc_drop": 0.311,
+        "failure_shape": "step"
+      },
+      "logreg": {
+        "auc_at_eps_0": 0.9921,
+        "auc_at_eps_1": 0.4868,
+        "largest_single_step_auc_drop": 0.22499999999999998,
+        "failure_shape": "step"
+      }
+    }
+  },
+  "neural_arm": {
+    "families": [
+      "mlp",
+      "xgboost"
+    ],
+    "rec_dm_by_family": {
+      "mlp": 0.9141759058975581,
+      "xgboost": 0.8869139337090209
+    },
+    "rec_dm_spread": 0.02726197218853721,
+    "label_free_helps_in_every_family": true,
+    "representation_agnostic": true,
+    "tolerance": 0.15,
+    "text_encoder_readiness": {
+      "raw_text_column_present": false,
+      "raw_text_column": null,
+      "feature_extractor_available": true,
+      "pipeline_accepts_raw_text": true,
+      "blocked_on": "corpus ships stylometric features only; raw email bodies required",
+      "unblocking_action": "obtain message bodies (Zenodo archive internals or the upstream CEAS-08 / TREC-07 / Nazario sources), run features.extract_frame, then fine-tune an encoder on the same splits",
+      "status": "blocked on data, not on code"
+    }
+  },
+  "stability": {
+    "n_seeds": 10,
+    "transfer_gap_pp": {
+      "mean": 29.022,
+      "sd": 1.0219784733545028,
+      "ci95_lo": 28.431974999999994,
+      "ci95_hi": 29.638100000000005
+    },
+    "rec_dm": {
+      "mean": 0.9030356385866579,
+      "sd": 0.02299908682699901,
+      "ci95_lo": 0.8899566576360559,
+      "ci95_hi": 0.916398802973716
+    },
+    "f1_dm": {
+      "mean": 0.8389602119368172,
+      "sd": 0.011448485400944675,
+      "ci95_lo": 0.8325347190841521,
+      "ci95_hi": 0.8457817880889796
+    },
+    "significance": {
+      "dm vs stale": {
+        "mean_diff_f1": 0.21402677466098782,
+        "cohens_dz": 2.2107665887226053,
+        "p_raw": 1.629044415254058e-11,
+        "p_holm": 6.516177661016232e-11,
+        "significant_05": true,
+        "reading": "dm better"
+      },
+      "dm vs em": {
+        "mean_diff_f1": 0.17815922360877703,
+        "cohens_dz": 2.1295420575976034,
+        "p_raw": 1.6295557943119345e-11,
+        "p_holm": 6.516177661016232e-11,
+        "significant_05": true,
+        "reading": "dm better"
+      },
+      "dm vs self": {
+        "mean_diff_f1": 0.1493255839783627,
+        "cohens_dz": 2.0220594423395215,
+        "p_raw": 1.6295557943119345e-11,
+        "p_holm": 6.516177661016232e-11,
+        "significant_05": true,
+        "reading": "dm better"
+      },
+      "dm vs oracle": {
+        "mean_diff_f1": -0.01984816130816148,
+        "cohens_dz": -2.0954768623471525,
+        "p_raw": 1.6295557943119345e-11,
+        "p_holm": 6.516177661016232e-11,
+        "significant_05": true,
+        "reading": "dm worse"
+      }
+    },
+    "dm_beats_stale_on_every_pair": true
+  },
+  "runtime_sec": 343.6
+}

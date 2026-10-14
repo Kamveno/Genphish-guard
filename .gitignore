@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.pytest_cache/
+*.egg-info/
+# the real Zenodo corpus is NOT redistributed here (CC BY 4.0 - keep attribution)
+data/corpus_features.csv
+# synthetic corpus is regenerated deterministically; keep it out of git
+data/synthetic_corpus_features.csv
+
+# python/pytest caches
+**/__pycache__/
+.pytest_cache/
+
+# trained detectors: regenerated deterministically by scripts/build_model.py
+# (21 MB pickle — the API retrains on first boot if it is absent)
+models/
+web/model.json
+
+# server runtime
+server.log
+.server.pid

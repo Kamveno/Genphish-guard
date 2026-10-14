@@ -1,0 +1,94 @@
+{
+  "data_mode": "SYNTHETIC",
+  "model": "xgboost",
+  "seed": 20261011,
+  "n_emails": 9980,
+  "generators": [
+    "deepseek3.2",
+    "gpt-4.1",
+    "llama-3.3-70b"
+  ],
+  "transfer": {
+    "f1": {
+      "diagonal_mean": 0.971,
+      "off_diagonal_mean": 0.6829,
+      "transfer_gap_pp": 28.81
+    },
+    "auc": {
+      "diagonal_mean": 0.9965,
+      "off_diagonal_mean": 0.9767,
+      "transfer_gap_pp": 1.99
+    }
+  },
+  "transfer_auc_offdiag_ci95": {
+    "point": 0.9766684515841142,
+    "lo": 0.9743094480684514,
+    "hi": 0.9790006366004373
+  },
+  "calibration_mean_f1": {
+    "stale": 0.6294869272203659,
+    "dm": 0.8494915936776403,
+    "em": 0.6620884357678068,
+    "self": 0.689101858225181,
+    "oracle": 0.8692008811294972
+  },
+  "calibration_gap_recovery": {
+    "dm": 0.8869139337090209,
+    "em": 0.12591388692618205,
+    "self": 0.2403524785042289
+  },
+  "drift_monitor": [
+    {
+      "scenario": "severe (\u2192llama)",
+      "target": "llama-3.3-70b",
+      "switch_idx": 1500,
+      "alarm_idx": 1891,
+      "ttd_emails": 391,
+      "max_wealth": 10000.0,
+      "fired": true
+    },
+    {
+      "scenario": "mild (\u2192gpt-4.1)",
+      "target": "gpt-4.1",
+      "switch_idx": 1500,
+      "alarm_idx": 2256,
+      "ttd_emails": 756,
+      "max_wealth": 10000.0,
+      "fired": true
+    },
+    {
+      "scenario": "no shift (control)",
+      "target": "deepseek3.2",
+      "switch_idx": 1500,
+      "alarm_idx": null,
+      "ttd_emails": null,
+      "max_wealth": 1.615312113732706,
+      "fired": false
+    }
+  ],
+  "zerotrust_win_ratio_range": [
+    1.0,
+    82.54041852680182
+  ],
+  "zerotrust_legit_preserved": {
+    "legit_blocked_binary": 0.082,
+    "legit_blocked_graded": 0.0006666666666666666,
+    "legit_defused_graded": 0.08133333333333333,
+    "legit_rescued_from_block": 0.08133333333333334
+  },
+  "error_analysis": {
+    "n_phish": 498,
+    "n_missed_stale": 317,
+    "miss_rate_stale": 0.6365461847389559,
+    "n_recovered_by_calib": 213,
+    "recovery_rate": 0.6719242902208202,
+    "top_features": [
+      "char_count",
+      "word_count",
+      "urgency_term_count",
+      "flesch_reading_ease",
+      "avg_sentence_len"
+    ]
+  },
+  "runtime_sec": 15.4
+}

@@ -1,0 +1,4 @@
+scenario,target,switch_idx,alarm_idx,ttd_emails,max_wealth,fired
+severe (→llama),llama-3.3-70b,1500,1891.0,391.0,10000.0,True
+mild (→gpt-4.1),gpt-4.1,1500,2256.0,756.0,10000.0,True
+no shift (control),deepseek3.2,1500,,,1.615312113732706,False

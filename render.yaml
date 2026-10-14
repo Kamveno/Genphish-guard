@@ -1,0 +1,21 @@
+# One-click deploy to Render (https://render.com) — free tier works.
+#   1. push this repo to GitHub
+#   2. Render dashboard -> New -> Blueprint -> pick the repo
+#   3. Render reads this file; no further configuration needed
+#
+# The free instance sleeps after ~15 min idle and takes ~40 s to wake.
+# Open the URL a couple of minutes before a demo.
+services:
+  - type: web
+    name: genphish-guard
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: |
+      pip install -r requirements.txt -r requirements-api.txt
+      python scripts/build_model.py
+    startCommand: python -m uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
