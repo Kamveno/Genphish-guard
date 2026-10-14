@@ -17,8 +17,6 @@ data/synthetic_corpus_features.csv
 
 # trained detectors: regenerated deterministically by scripts/build_model.py
 # (21 MB pickle — the API retrains on first boot if it is absent)
-models/
-web/model.json
 
 # server runtime
 server.log
